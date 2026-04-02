@@ -1,0 +1,9 @@
+2026-04-02 17:52:08  [UserPromptSubmit]  U main programu je potrebno definirati smislene LINQ upite nad objektnim
+modelom koji -çe se kasnije (mo++da) koristiti u samoj aplikaciji ---- koji bi to bili upiti?
+2026-04-02 17:52:22  [PreToolUse]  manage_todo_list
+2026-04-02 17:55:17  [UserPromptSubmit]  please add linq queries for - overdue todos, classes with isurgent true, top lessons with most pending tasks
+2026-04-02 17:55:22  [PreToolUse]  manage_todo_list
+2026-04-02 17:55:26  [PreToolUse]  read_file
+2026-04-02 17:55:38  [PreToolUse]  replace_string_in_file
+2026-04-02 17:55:44  [PreToolUse]  run_in_terminal
+2026-04-02 17:56:09  [PreToolUse]  manage_todo_list

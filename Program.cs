@@ -143,4 +143,76 @@ foreach (var c in classes)
     }
 }
 
+// ── LINQ: Hitne klase ────────────────────────────────────────────────────────
+var urgentClasses = classes.Where(c => c.IsUrgent).ToList();
+
+Console.ForegroundColor = ConsoleColor.Red;
+Console.WriteLine($"\n╔{line}");
+Console.WriteLine($"║  HITNE KLASE  ({urgentClasses.Count})");
+Console.WriteLine($"╚{line}");
+Console.ResetColor();
+
+if (urgentClasses.Count == 0)
+{
+    Console.WriteLine("  Nema hitnih klasa.");
+}
+else
+{
+    foreach (var c in urgentClasses)
+        Console.WriteLine($"  • {c.Name}");
+}
+
+// ── LINQ: Zakasnjeli zadaci ──────────────────────────────────────────────────
+var overdueTodos = classes
+    .SelectMany(c => c.Lessons.Select(l => new { Class = c, Lesson = l }))
+    .SelectMany(x => x.Lesson.TodoItems.Select(t => new { x.Class, x.Lesson, Todo = t }))
+    .Where(x => !x.Todo.IsCompleted && x.Todo.DueDate.HasValue && x.Todo.DueDate.Value < DateTime.Now)
+    .OrderBy(x => x.Todo.DueDate)
+    .ToList();
+
+Console.ForegroundColor = ConsoleColor.Red;
+Console.WriteLine($"\n╔{line}");
+Console.WriteLine($"║  ZAKASNJELI ZADACI  ({overdueTodos.Count})");
+Console.WriteLine($"╚{line}");
+Console.ResetColor();
+
+if (overdueTodos.Count == 0)
+{
+    Console.WriteLine("  Nema zakasnjelih zadataka.");
+}
+else
+{
+    foreach (var x in overdueTodos)
+        Console.WriteLine($"  • [{x.Class.Name} › {x.Lesson.Title}]  {x.Todo.Title}  (rok: {x.Todo.DueDate:dd.MM.yyyy})");
+}
+
+// ── LINQ: Top lekcije po broju neobavljenih zadataka ─────────────────────────
+var topLessons = classes
+    .SelectMany(c => c.Lessons.Select(l => new
+    {
+        ClassName  = c.Name,
+        LessonName = l.Title,
+        Pending    = l.TodoItems.Count(t => !t.IsCompleted)
+    }))
+    .Where(x => x.Pending > 0)
+    .OrderByDescending(x => x.Pending)
+    .Take(5)
+    .ToList();
+
+Console.ForegroundColor = ConsoleColor.Magenta;
+Console.WriteLine($"\n╔{line}");
+Console.WriteLine($"║  TOP LEKCIJE PO BROJU ZADATAKA  ({topLessons.Count})");
+Console.WriteLine($"╚{line}");
+Console.ResetColor();
+
+if (topLessons.Count == 0)
+{
+    Console.WriteLine("  Sve lekcije su dovrsene.");
+}
+else
+{
+    foreach (var x in topLessons)
+        Console.WriteLine($"  • {x.Pending,2} zadataka  [{x.ClassName} › {x.LessonName}]");
+}
+
 Console.WriteLine();
