@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "powershell.exe -ExecutionPolicy Bypass -NoProfile -File \"C:\\git\\ASP.NET\\.github\\hooks\\log-event.ps1\" -EventName UserPromptSubmit",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "powershell.exe -ExecutionPolicy Bypass -NoProfile -File \"C:\\git\\ASP.NET\\.github\\hooks\\log-event.ps1\" -EventName PreToolUse",
+        "timeout": 10
+      }
+    ]
+  }
+}

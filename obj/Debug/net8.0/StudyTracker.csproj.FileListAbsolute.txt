@@ -1,0 +1,15 @@
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.GeneratedMSBuildEditorConfig.editorconfig
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.AssemblyInfoInputs.cache
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.AssemblyInfo.cs
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.csproj.CoreCompileInputs.cache
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.sourcelink.json
+C:\git\ASP.NET\bin\Debug\net8.0\StudyTracker.exe
+C:\git\ASP.NET\bin\Debug\net8.0\StudyTracker.deps.json
+C:\git\ASP.NET\bin\Debug\net8.0\StudyTracker.runtimeconfig.json
+C:\git\ASP.NET\bin\Debug\net8.0\StudyTracker.dll
+C:\git\ASP.NET\bin\Debug\net8.0\StudyTracker.pdb
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.dll
+C:\git\ASP.NET\obj\Debug\net8.0\refint\StudyTracker.dll
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.pdb
+C:\git\ASP.NET\obj\Debug\net8.0\StudyTracker.genruntimeconfig.cache
+C:\git\ASP.NET\obj\Debug\net8.0\ref\StudyTracker.dll
