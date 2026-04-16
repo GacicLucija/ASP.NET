@@ -13,6 +13,13 @@
         "command": "powershell.exe -ExecutionPolicy Bypass -NoProfile -File \"C:\\git\\ASP.NET\\.github\\hooks\\log-event.ps1\" -EventName PreToolUse",
         "timeout": 10
       }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "powershell.exe -ExecutionPolicy Bypass -NoProfile -File \"C:\\git\\ASP.NET\\.github\\hooks\\log-event.ps1\" -EventName PostToolUse",
+        "timeout": 10
+      }
     ]
   }
 }

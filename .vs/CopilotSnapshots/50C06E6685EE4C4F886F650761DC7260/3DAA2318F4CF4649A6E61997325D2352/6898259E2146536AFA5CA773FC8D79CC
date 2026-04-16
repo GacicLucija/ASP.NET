@@ -1,0 +1,84 @@
+﻿# log-event.ps1 — Appends agent lifecycle events to agent_log.txt for auditing/debugging.
+# Invoked by agent_hook.json on UserPromptSubmit and PreToolUse events.
+# Receives a JSON payload from the agent on stdin.
+
+param(
+    [string]$EventName = "Unknown"
+)
+
+$logFile = Join-Path $PSScriptRoot "agent_log.txt"
+$errorLogFile = Join-Path $PSScriptRoot "agent_error_log.txt"
+
+try {
+    # Read and parse the JSON payload
+    $rawInput = [Console]::In.ReadToEnd()
+    $detail = ""
+
+    if (-not [string]::IsNullOrWhiteSpace($rawInput)) {
+        try {
+            $parsed = $rawInput | ConvertFrom-Json
+
+            if ($EventName -eq "UserPromptSubmit") {
+                # Try different possible property names
+                if ($parsed.PSObject.Properties['prompt']) {
+                    $detail = $parsed.prompt
+                } elseif ($parsed.PSObject.Properties['message']) {
+                    $detail = $parsed.message
+                } elseif ($parsed.PSObject.Properties['text']) {
+                    $detail = $parsed.text
+                } else {
+                    $detail = "Prompt received (properties: $($parsed.PSObject.Properties.Name -join ', '))"
+                }
+            } 
+            elseif ($EventName -eq "PreToolUse") {
+                # Try different possible property names for tool name
+                $toolName = $null
+                if ($parsed.PSObject.Properties['tool_name']) {
+                    $toolName = $parsed.tool_name
+                } elseif ($parsed.PSObject.Properties['toolName']) {
+                    $toolName = $parsed.toolName
+                } elseif ($parsed.PSObject.Properties['name']) {
+                    $toolName = $parsed.name
+                }
+
+                if ($toolName) {
+                    $detail = $toolName
+
+                    # Log details for file-editing tools
+                    if ($toolName -match "replace_string|create_file|multi_replace") {
+                        $toolInput = $parsed.tool_input ?? $parsed.toolInput ?? $parsed.input
+                        if ($toolInput) {
+                            $filePath = $toolInput.file_path ?? $toolInput.filePath
+                            if ($filePath) { $detail += "`n    File: $filePath" }
+                        }
+                    }
+                } else {
+                    $detail = "Tool invoked (properties: $($parsed.PSObject.Properties.Name -join ', '))"
+                }
+            } else {
+                $detail = "Event received"
+            }
+        } catch {
+            $detail = "Error parsing JSON: $_"
+            $errorTimestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+            $errorMsg = "$errorTimestamp [$EventName] Parse error: $_`nRaw input (first 500 chars): $($rawInput.Substring(0, [Math]::Min(500, $rawInput.Length)))"
+            Add-Content -Path $errorLogFile -Value $errorMsg -ErrorAction SilentlyContinue
+        }
+    } else {
+        $detail = "No input received"
+    }
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $entry = "$timestamp  [$EventName]  $detail"
+
+    Add-Content -Path $logFile -Value $entry -ErrorAction Stop
+
+} catch {
+    # Last resort error logging
+    $errorTimestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $errorMsg = "$errorTimestamp [$EventName] Script error: $_"
+    Add-Content -Path $errorLogFile -Value $errorMsg -ErrorAction SilentlyContinue
+}
+
+# Exit 0 = allow the agent to continue normally
+exit 0
